@@ -1,5 +1,7 @@
 This server will be used in an upcoming king-of-the-hill challenge on [codegolf.stackexchange.com](http://codegolf.stackexchange.com)
 
+Before we even begin, allow me to say this: The bots currently existing under `players/` are strictly for testing. There's not even any code there. All they do is print their name to the console and wait. You get to play the part of the bot yourself by manually reading `from_server` and writing to `to_server`. Lucky you! ...Take those bots out once you have at least 6 actual bots to test with.
+
 # HOW TO USE
 
 Under `players/` create a directory with the name of your bot. Inside of it, create these files:
