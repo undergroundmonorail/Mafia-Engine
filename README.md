@@ -114,7 +114,7 @@ Output the name of the player who you think the mafia is trying to kill tonight.
 
 When night is over, the next day starts. On days other than 0, the opening message is different:
 ```
-Dawn of day #.
+Dawn of day 1. # Obviously the '1' changes depending on which day it is
 Last night, someBot was killed. # This line only shows up if the mafia killed someone
 Investigations showed that aBot is $$$$-aligned. # This line only shows up if you're the cop and you investigated someone overnight. aBot is their name and $$$$ is replaced by 'mafia' or 'village'.
 These players are still alive: every, remaining, player, is, listed, here, in, this, format
