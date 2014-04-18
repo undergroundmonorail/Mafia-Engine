@@ -188,7 +188,7 @@ def main():
 		m_write(players)
 
 		# During a day, players may perform up to 50 actions (Action= vote or talk)
-		for r in xrange(3):
+		for r in xrange(50):
 			for p in players:
 				try:
 					execute(p)
