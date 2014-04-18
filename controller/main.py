@@ -117,6 +117,12 @@ def main():
 	os.chdir('players')
 	players, mafia, cop, doctor = get_players(os.listdir('.'))
 	
+	# Give everyone a list of players
+	for p in players:
+		with open(p.name + '/players', 'w') as f:
+			# Sort it so that it isn't ordered by role
+			f.write('\n'.join(sorted([l.name for l in players])))
+	
 	# Clear the log file, so it's fresh for the new game
 	with open('log', 'w') as f:
 		f.truncate(0)
