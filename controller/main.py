@@ -256,6 +256,7 @@ def main():
 		
 		m_write(players)
 		for p in players:
+			execute(p)
 			p.vote = None
 		
 		# Don't go to night if a win condition's been met.
@@ -329,6 +330,13 @@ def main():
 		
 		log('')
 		day += 1
+	
+	if mafia:
+		print 'MAFIA VICTORY'
+		log('MAFIA VICTORY')
+	else:
+		print 'VILLAGE VICTORY'
+		log('VILLAGE VICTORY')
 		
 if __name__ == '__main__':
 	main()

@@ -65,3 +65,58 @@ say [id of the message you wish to send] [iff the id of the message > than 4: th
 This will show up to others as `yourBotName says "[the message associated with that ID][the subject of your message, if applicable]"`. If you added an intended recipient, `thatBot'sName: ` will be inserted directly after the frst quotation mark.
 
 Note that the subject of the message and the intended recipient must both be the name of a bot playing in the game, though not necessarily one that is still alive. The names of all bots in the game will be inserted into the `player` file for you. Note also that you will recieve messages that you yourself have sent, and that every player recieves them even if you specify who the message is meant for.
+
+Voting is also a very important part of the game. To vote for a player, simply output `vote playerName`. To vote for no one, do one of these things:
+
+* Output `vote no one`
+* Never vote for anyone for the whole day
+* Try to vote for people, but have the output format wrong so the server gets confused and defaults you to voting for no one
+
+Voting shows up for everyone (including you) as `yourBotName votes to kill voteTarget`, with `voteTarget` being the name of the player that was voted for or `no one` if no one was voted for. Note that you cannot vote on day 0: It's treated the same as not outputting anything.
+
+At the end of the day, so long as the majority of people didn't vote to kill someone, there will be a lynch. You will see input that looks like this:
+```
+The town has killed playerName!
+They were $ROLE
+```
+where `$ROLE` is one of the following:
+
+* `a villager`
+* `a mafioso`
+* `the cop`
+* `the doctor`
+
+If no one was lynched, you will instead see this:
+```
+The town opted to lynch no one today.
+```
+When you recieve this input, regardless of whether someone was lynched or not, the server isn't looking for your output. You're only being run so you can see who was lynched.
+
+Overnight, if you have a power role, your bot will be run once more to use your power.
+
+If you are mafia, when you are woken up, you will see this:
+```
+It is night. Vote for a victim.
+```
+At that point, you will vote for who you want the mafia to kill overnight. No fancy syntax is necessary, just output the player's name. If you confuse the server, you'll be put down for a "don't kill anyone" vote (which you sometimes want!)
+
+If you're the cop, you get this input at night:
+```
+It is night. Who would you like to investigate?
+```
+Again, output the name of the player you want to know more about. Nothing fancy. Screwing this up means you don't investigate anyone.
+
+Finally, the doctor gets this at night:
+```
+It is night. Who would you like to save?
+```
+Output the name of the player who you think the mafia is trying to kill tonight. If you're right, no one dies overnight.
+
+When night is over, the next day starts. On days other than 0, the opening message is different:
+```
+Dawn of day #.
+Last night, someBot was killed. # This line only shows up if the mafia killed someone
+Investigations showed that aBot is $$$$-aligned. # This line only shows up if you're the cop and you investigated someone overnight. aBot is their name and $$$$ is replaced by 'mafia' or 'village'.
+These players are still alive: every, remaining, player, is, listed, here, in, this, format
+```
+Days repeat until the mafia matches/exceeds the village in numbers OR the mafia is entirely wiped out.
