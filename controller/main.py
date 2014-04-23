@@ -61,41 +61,43 @@ def log(message):
 	"""Append message + newline to the log file. This happens a lot, so this
 	function exists as shorthand.
 	"""
-	with open('log', 'a') as f:
+	with open('../tmp/log', 'a') as f:
 		f.write(textwrap.dedent(message + '\n'))
 
+def assign_roles(players):
+	"""Make 1/3 of the players mafia, 1 player a cop and one player a doctor.
+	Return the list of players, a list of mafia, the Player object of the cop and
+	the Player object of the doctor.
+	"""
+	# Shuffling the whole list ensures you aren't assigning multiple roles to one
+	# player, which we would have to account for with random.choice()
+	random.shuffle(players)
+	
+	# Assign mafia
+	for _ in xrange(len(players) / 3):
+		players[0].role = 1
+		players.append(players.pop(0))
+	
+	# Assign cop
+	players[0].role = 2
+	players.append(players.pop(0))
+	
+	# Assign doctor
+	players[0].role = 3
+	
+	# Return list of players, list of mafia, cop and doctor
+	return (players,
+	        filter(lambda p: p.role == 1, players),
+	        players[-1],
+	        players[0])
+		
 def get_players(players):
 	"""Return a list of player objects for each player name in the input. Also
 	return the doc, cop and a list of the mafia seperately.
 	"""
-	def assign_roles(players):
-		# Shuffling the whole list ensures you aren't assigning multiple roles to one
-		# player, which we would have to account for with random.choice()
-		random.shuffle(players)
-		
-		# Make 1/3rd of the players mafia, one player a doctor and one player a cop
-		for _ in xrange(len(players) / 3):
-			players[0].role = 1
-			players.append(players.pop(0))
-		
-		players[0].role = 2
-		players.append(players.pop(0))
-		
-		players[0].role = 3
-		
-		# Return list of players, list of mafia, cop and doctor
-		return (players,
-		        filter(lambda p: p.role == 1, players),
-		        players[-1],
-		        players[0])
-		
-	# At least six players are required. Ensure that we have six. Do this by 
-	# testing for at least seven, because...
-	if len(players) < 7:
+	# At least six players are required.
+	if len(players) < 6:
 		sys.exit('Not enough players.')
-	
-	# ...The log file is kept in the same directory as the players. Get rid of it
-	players.remove('log')
 	
 	# Convert to Player object, assign roles, and return
 	return assign_roles(map(lambda p: Player(p), players))
@@ -113,6 +115,10 @@ def kill(p, players, mafia, cop, doctor):
 	return players, mafia, cop, doctor	
 
 def main():
+	# Clear the log file, so it's fresh for the new game
+	with open('tmp/log', 'w') as f:
+		f.truncate(0)
+	
 	# Get player objects for all players, the doc, the cop, and a list of mafia
 	os.chdir('players')
 	players, mafia, cop, doctor = get_players(os.listdir('.'))
@@ -122,10 +128,6 @@ def main():
 		with open(p.name + '/players', 'w') as f:
 			# Sort it so that it isn't ordered by role
 			f.write('\n'.join(sorted([l.name for l in players])))
-	
-	# Clear the log file, so it's fresh for the new game
-	with open('log', 'w') as f:
-		f.truncate(0)
 	
 	# Create a dictionary allowing you to look up player objects by their name
 	name_to_player = dict(map(lambda p: (p.name, p), players))
