@@ -168,13 +168,13 @@ def main():
                       Your allies are:""")
 				m.add_message('\n'.join(p.name for p in mafia if p is not m))
 			
-				cop.add_message('You are the cop.')
-				doctor.add_message('You are the doctor.')
+			cop.add_message('You are the cop.')
+			doctor.add_message('You are the doctor.')
 		else:
 			for p in players:
 				p.add_message('Dawn of day {}.'.format(day))
 				if victim is not None:
-					p.add_message('Last night, {} was killed.'.format(victim.name))
+					p.add_message('Last night, {} was killed. They were {}.'.format(victim.name, victim.get_role()))
 			
 			if victim is not None:
 				players, mafia, cop, doctor = kill(victim, players, mafia, cop, doctor)
