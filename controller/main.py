@@ -151,9 +151,9 @@ def main():
 		# investigation and all players need to know who died.
 		if day == 0:
 			log("""\
-          Cop: {}
-          Doctor: {}
-          Mafia: {}""".format(
+			    Cop: {}
+			    Doctor: {}
+			    Mafia: {}""".format(
           cop.name, doctor.name, ', '.join(m.name for m in mafia)))
 			
 			for p in players:
@@ -168,8 +168,8 @@ def main():
                       Your allies are:""")
 				m.add_message('\n'.join(p.name for p in mafia if p is not m))
 			
-			cop.add_message('You are the cop.')
-			doctor.add_message('You are the doctor.')
+				cop.add_message('You are the cop.')
+				doctor.add_message('You are the doctor.')
 		else:
 			for p in players:
 				p.add_message('Dawn of day {}.'.format(day))
@@ -178,9 +178,11 @@ def main():
 			
 			if victim is not None:
 				players, mafia, cop, doctor = kill(victim, players, mafia, cop, doctor)
-				log('{}, {}, was killed.'.format(victim.name, victim.get_role))
+				log('{}, {}, was killed.'.format(victim.name, victim.get_role()))
+				if (not mafia) or len(mafia) >= (len(players) - len(mafia)):
+					break
 			
-			if suspect is not None:
+			if suspect is not None and cop is not None:
 				cop.add_message('Investigations showed that {} is {}-aligned.'.format(
 				suspect.name, 'mafia' if suspect.role == 1 else 'village'))
 			
@@ -206,10 +208,13 @@ def main():
 										l.add_message('{} has voted to lynch no one.'.format(p.name))
 							else:
 								p.vote = name_to_player[command[1]]
-								log('{} has voted to lynch {}.'.format(p.name, command[1]))
-								for l in players:
-									l.add_message(
-									'{} has voted to lynch {}.'.format(p.name, command[1]))
+								if p.vote in players:
+									log('{} has voted to lynch {}.'.format(p.name, command[1]))
+									for l in players:
+										l.add_message(
+										'{} has voted to lynch {}.'.format(p.name, command[1]))
+								else:
+									p.vote = None
 					elif command[0] == 'say':
 						# Send a message to all players
 						message = '{} says "'.format(p.name)
@@ -278,8 +283,13 @@ def main():
 		for m in mafia:
 			try:
 				execute(m)
-				victim_votes.append(name_to_player[m_read(m)])
-				log('{} votes to kill {}.'.format(m.name, victim_votes[-1].name))
+				v = name_to_player[m_read(m)]
+				if v in players:
+					victim_votes.append(v)
+					log('{} votes to kill {}.'.format(m.name, victim_votes[-1].name))
+				else:
+					victim_votes.append(None)
+					log(m.name + ' votes to kill no one.')
 			except:
 				# Vote to kill no one on invalid input
 				victim_votes.append(None)
